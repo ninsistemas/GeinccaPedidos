@@ -23,6 +23,7 @@
 </template>
 
 <script>
+  //leandro naveda
 import axios from 'axios'
 import {Global} from '../../../shared/Global'
 import HeadCom from '../../layouts/HeadCom'
