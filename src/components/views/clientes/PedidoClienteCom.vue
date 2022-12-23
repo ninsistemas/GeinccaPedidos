@@ -14,17 +14,27 @@
                                 <td>Descripcion</td>
                                 <td>Total</td>
                             </tr>
-                            <tr v-for="item in itemdoc" :key="item.id">
+                            <tr v-for="(item,index) in pedidotemp" :key="index">
                                 <td><small>{{ item.codprod }} - {{ item.descrip }}<br>
                                 Cant: {{ item.cantidad }} - Precio: {{ item.precio | currency }}</small></td>
                                 <td class="text-right"><small>{{ item.cantidad*item.precio | currency }}</small></td>
-                                <td><button  @click="borraoitem(item.id)" class="btn btn-sm  btn-outline-dark btn-circle"><i class="fa fa-trash"></i></button></td>
+                                <td><button  @click="borraoitem(index)" class="btn btn-sm  btn-outline-dark btn-circle"><i class="fa fa-trash"></i></button></td>
                             </tr>
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td></td>
+                                <td>SUB TOTAL</td>
                                 <td class="text-right"><small><b>{{ this.totalre | currency }}</b></small></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>IVA 16% </td>
+                                <td class="text-right"><small><b>{{ this.totalre*0.16 | currency }}</b></small></td>
+                                <td></td>
+                            </tr>
+                             <tr>
+                                <td>TOTAL</td>
+                                <td class="text-right"><small><b>{{ this.totalre+(this.totalre*0.16) | currency }}</b></small></td>
                                 <td></td>
                             </tr>
                         </tfoot>
@@ -32,12 +42,13 @@
                 </div>
                 <div v-if="this.cantire>0" class="row g-2">
                     <div class="form-floating col">
-                        <input v-model="cerrardoc.comentario"  type="text" class="form-control" placeholder="Comentario"  maxlength="40" v-maska="{ mask: 'X*', tokens: { 'X': { pattern: /[a-zA-Z .,ñÑ]/, uppercase: true }} }">
+                        <input v-model="comentario"  type="text" class="form-control" placeholder="Comentario"  maxlength="40" v-maska="{ mask: 'X*', tokens: { 'X': { pattern: /[a-zA-Z .,ñÑ]/, uppercase: true }} }">
                     </div>
                 </div>
                  <hr>
                  <div v-if="this.cantire>0" class="d-grid gap-2">
-                    <button @click="totalizarpedido()" class="btn btn-dark" >Hacer Pedido</button>
+                    <button @click="totalizarpedido()" class="btn btn-danger mr-3"  >GUARDAR Y ENVIAR</button>
+                    <button @click="guardarPedido()" class="btn btn-dark mr-3"  >GUARDAR</button>
                     <router-link to="clientes" class="btn btn-secondary" type="button" >Cancelar</router-link>
                 </div>
             <!-- Modal -->
@@ -57,7 +68,7 @@
                             </model-select>
                         </div>
                         <div class="form-floating col">
-                            <input v-model="documento.cantidad" type="number" class="form-control" placeholder="Cantidad"  min="1" step="1">
+                            <input v-model="cantidad" type="number" class="form-control" placeholder="Cantidad"  min="1" step="1">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -88,20 +99,16 @@ export default {
         return {
             textomen : false,
             colormen : '',
-            cerrardoc : {
-                codigodocu : null,
-                comentario : null,
-            },
             cliente : {},
             iddelet : { id : null },
-            documento : {
-                codigo : null,
-                codvend : null,
-                codclie : null,
-                codprod : null,
-                cantidad : 0,
-                precio : 0
-            },
+            pedidotemp : [],
+            codvend : null,
+            codclie : null,
+            codprod : null,
+            descrip : null,
+            cantidad : 0,
+            precio : 0,
+            comentario : '',
             cantire : 0,
             totalre : 0,
             options : [],
@@ -112,99 +119,96 @@ export default {
             },
         }
     },
-    mounted(){
+    created(){
+        localStorage.removeItem('spx_pedidotemp')
+        let datoslocales = JSON.parse(localStorage.getItem('spx_localdata'));
         if(this.$route.params.codclie){
-            this.documento.codclie = this.$route.params.codclie
-            this.documento.codvend = localStorage.getItem('spx_use_v')
-            this.getcliente()
+            this.cliente = {
+                codclie : this.$route.params.codclie,
+                descrip : this.$route.params.descrip
+            }
+            this.codclie = this.cliente.codclie
+            this.codvend = datoslocales.spx_use_v
             this.getProductos()
-            this.codigoDoc(this.documento.codvend)
         }
         else{
             this.$router.push('/clientes') 
         }
     },
     methods: {
-        getcliente(){
-            axios.get(Global.url+'cliente/'+this.documento.codclie,this.headRequest())
-            .then(res =>{
-                this.cliente = res.data
-            })
-            .catch(function(error){
-                console.log(error)
-            })
-        },
         getProductos(){
-            axios.get(Global.url+'exproductos',this.headRequest())
-            .then(res=>{
-                res.data.forEach((producto)=> {
-                    this.options.push({value : producto.CodProd+'ç'+producto.Precio, text : producto.CodProd+' - '+producto.Descrip+' (E : '+parseInt(producto.Existen)+' - P: '+producto.Precio+')' })
+            let listaProductos = JSON.parse(localStorage.getItem('spx_priceslist'));
+            if(listaProductos != null){
+                listaProductos.forEach((producto)=>{
+                    this.options.push({value : producto.CodProd+'ç'+producto.Descrip+'ç'+producto.Precio, text : producto.CodProd+' - '+producto.Descrip+' (E : '+parseInt(producto.Existen)+' - P: '+producto.Precio+')' })
                 });
             }
-            )
-            .catch(function(error){
-                console.log(error)
-            })
-        },
-        codigoDoc(codvend){
-            axios.get(Global.url+'nuevodocumento/'+codvend,this.headRequest())
-            .then(res =>{
-                this.documento.codigo = res.data[0].correldocu
-                this.cerrardoc.codigodocu = res.data[0].correldocu
-            })
-            .catch(function(error){
-                console.log(error)
-            })
-        },
+        },       
         nuevodocumento(){
             let itdato = this.item.value.split('ç')
-            this.documento.codprod = itdato[0]
-            this.documento.precio = itdato[1]
-            axios.post(Global.url+'documento',this.documento,this.headRequest())
-            .then(res=>{
-                this.getdocumentos()
-                this.textomen=res.data.message
-                this.colormen=res.data.colormen
+            this.codprod = itdato[0]
+            this.descrip = itdato[1]
+            this.precio = itdato[2]
+            this.pedidotemp.push({
+                codvend :  this.codvend,
+                codclie : this.codclie,
+                cliente : this.cliente.descrip,
+                codprod : this.codprod,
+                descrip : this.descrip,
+                cantidad : this.cantidad,
+                precio : this.precio,
+                comentario : this.comentario
             })
-            .catch(function(error){
-                console.log(error)
-            })
-        },
-        getdocumentos(){
-            axios.get(Global.url+'documentovendedor/'+this.documento.codvend+'/'+this.documento.codclie,this.headRequest())
-            .then(res =>{
-                this.totalre = 0
-                 res.data.forEach((documento)=> {
-                    this.totalre = this.totalre+(documento.cantidad*documento.precio)
-                });
-                this.itemdoc = res.data
-                this.cantire = this.itemdoc.length
-            })
-            .catch(function(error){
-                console.log(error)
-            })
+            localStorage.setItem('spx_pedidotemp',JSON.stringify(this.pedidotemp))
+            this.cantire = this.pedidotemp.length
+            this.calculatotal()
         },
         deshabilita() {
             this.textomen = false
             this.colormen = ''
         },
         borraoitem(iditem){
-            axios.get(Global.url+'documento/item/'+iditem,this.headRequest())
-            .then(() =>{
-                this.getdocumentos()
+            this.pedidotemp.splice(iditem)
+            this.cantire = this.pedidotemp.length
+            this.calculatotal()
+        },
+        calculatotal(){
+            this.totalre = 0
+            this.pedidotemp.forEach((item)=>{
+                this.totalre += item.precio*item.cantidad
+            })
+        },
+        guardarPedido(){
+            this.actualizarComentario(this.comentario)
+            let pedidospendi = JSON.parse(localStorage.getItem('spx_pedidospend'))
+            if(pedidospendi){
+                pedidospendi.forEach((pedidoit)=>{
+                    this.pedidotemp.push(pedidoit)
+                });
+            }        
+            localStorage.setItem('spx_pedidospend',JSON.stringify(this.pedidotemp))
+            localStorage.removeItem('spx_pedidotemp')
+            // this.pedidotemp = []
+            // this.cantire = 0
+            this.$router.push('/home');
+        },
+        totalizarpedido(){
+            this.actualizarComentario(this.comentario)
+            //console.log(JSON.stringify(this.pedidotemp));
+            let datosDocumento = JSON.stringify(this.pedidotemp);
+            axios.post(Global.url+'documento/cerrardocu',datosDocumento,this.headRequest())
+            .then(()=>{
+                 //console.log(res)
+                 this.$router.push('/home') 
             })
             .catch(function(error){
                 console.log(error)
             })
         },
-        totalizarpedido(){
-            axios.post(Global.url+'documento/cerrardocu',this.cerrardoc,this.headRequest())
-            .then(() =>{
-                 this.$router.push('/home') 
+        actualizarComentario(textoCo){
+            this.pedidotemp.forEach((item)=>{
+                item.comentario=textoCo
             })
-            .catch(function(error){
-                console.log(error)
-            }) 
         },
     },
 }

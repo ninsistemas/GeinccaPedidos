@@ -2,8 +2,8 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import helper from './shared/Helper'
-import {Global} from './shared/Global'
-import axios from 'axios'
+//import {Global} from './shared/Global'
+//import axios from 'axios'
 import 'bootstrap/dist/css/sb-admin-2.min.css';
 import '@fortawesome/fontawesome-free/css/all.css'
 import '@fortawesome/fontawesome-free/js/all.js'
@@ -26,29 +26,14 @@ Vue.use(Maska)
  
 Vue.mixin({
   methods: {
-      // verifica estatus usuario
       checkUser: function () {
-        if(localStorage.getItem('spx_tok_p') && localStorage.getItem('spx_nam_p')){  
-          axios.get(Global.url+'usuario/verifica',this.headRequest())
-          .then(
-          res=>{
-              if(res.data.response!="ok"){
-                this.logOutApp()
-              }
-          }
-          )
-          .catch(function(error){
-              console.log(error)
-              this.logOutApp()
-          })
-      }
-      else{
-        this.logOutApp()
+        let datoslocales = JSON.parse(localStorage.getItem('spx_localdata'));
+        if(!datoslocales){
+          this.logOutApp()
       }
     }  
   },
 })
-
 new Vue({
   router,
   render: h => h(App),

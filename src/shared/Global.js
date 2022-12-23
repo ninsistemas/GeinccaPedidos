@@ -1,4 +1,4 @@
 export var  Global = {
-    online_url: 'https://apigeincca.geincca.com/api/',
-    url: 'http://localhost:9999/apigeincca/public/api/',
+    url: 'https://apivalerana.geincca.com/api/',
+    dev_url: 'http://localhost:8081/apigeincca/public/api/',
 }

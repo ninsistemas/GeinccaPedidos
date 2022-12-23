@@ -19,7 +19,15 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td><b>Total</b></td>
+                                <td><b>SUB TOTAL</b></td>
+                                <td class="text-right"><small><b>{{ this.totalm/1.16 | currency }}</b></small></td>
+                            </tr>
+                            <tr>
+                                <td><b>IVA</b></td>
+                                <td class="text-right"><small><b>{{ this.totalm-(this.totalm/1.16) | currency }}</b></small></td>
+                            </tr>
+                            <tr>
+                                <td><b>TOTAL</b></td>
                                 <td class="text-right"><small><b>{{ this.totalm | currency }}</b></small></td>
                             </tr>
                         </tfoot>
@@ -52,6 +60,7 @@ export default {
         }
     },
     mounted(){
+        this.checkUser()
         if(this.$route.params.codigo){
             this.codigo = this.$route.params.codigo
             this.totalm = this.$route.params.totalm

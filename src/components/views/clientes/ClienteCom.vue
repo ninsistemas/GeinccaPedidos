@@ -1,60 +1,63 @@
 <template>
-<div class="container">
+  <main>
     <head-com/>
-    <div class="input-group mt-4">
-        <input v-model="datosbusqueda" type="search" class="form-control rounded" placeholder="INGRESE NOMBRE - RIF" aria-label="Search" aria-describedby="search-addon" />
-        <button @click="getClientes()" type="button" class="btn btn-danger"><i class="fa fa-search"></i></button>
+    <div class="mt-3">
+        <table id="tabla1" class="table table-sm table-secondary table-borderless">
+          <thead>
+            <tr>
+              <th class="text-center">MIS CLIENTES</th>
+              <!-- th class="text-sm">Precio</th -->
+              <!-- th class="text-sm">Cantidad</th -->
+              <!-- th></th -->
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="cliente in clientes" :key="cliente.id">
+              <td>
+                  <router-link class="btn btn-dark btn-user btn-block" :to="{name:'pedidoclientes',params:{codclie:cliente.codclie,descrip:cliente.descrip}}">
+                    <small>
+                      {{ cliente.descrip }}
+                    </small>
+                  </router-link>
+              </td>
+            </tr>
+          </tbody>
+        </table>
     </div>
-    <hr>
-    <table class="table table-Light">
-      <tbody>
-        <tr v-for="cliente in clientes" :key="cliente.id">
-          <td>
-              <router-link class="btn btn-dark btn-user btn-block" :to="{name:'pedidoclientes',params:{codclie:cliente.codclie}}">
-                <small>
-                  {{ cliente.descrip }}
-                </small>
-              </router-link>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-</div>      
-</template>
-
-<script>
-  //leandro naveda
-import axios from 'axios'
-import {Global} from '../../../shared/Global'
-import HeadCom from '../../layouts/HeadCom'
-
-export default {
-  name: "ClienteCom",
-  data(){
-    return{
-        clientes:[],
-        datosbusqueda : null,
-        vendedor : null
-    }
-  },
-  mounted(){
-    this.vendedor = localStorage.getItem('spx_use_v')
-    this.checkUser()
-  },
-  components:{
-    HeadCom,
-  },
-  methods: {
-    getClientes(){
-        axios.get(Global.url+'clientesbusqueda/'+this.datosbusqueda,this.headRequest())
-        .then(res=>{
-            this.clientes=res.data
-          }
-        )
-        .catch(function(error){
-            console.log(error)
-          })
+  </main>
+  </template>
+  
+  <script>
+  import "jquery/dist/jquery.min.js";
+  import "datatables.net-dt/js/dataTables.dataTables";
+  import "datatables.net-dt/css/jquery.dataTables.min.css";
+  import $ from "jquery";
+  
+  import HeadCom from '../../layouts/HeadCom'
+  
+  export default {
+    name: "ClienteCom",
+    data(){
+      return{
+          clientes:[],
+      }
     },
-  }
-}  
-</script>
+    mounted(){
+      this.checkUser()
+      this.listaClientes()
+    },
+    components:{
+      HeadCom,
+    },
+    methods: {
+      listaClientes(){
+        this.clientes = JSON.parse(localStorage.getItem('spx_clientlist'));
+        if(this.clientes != null){
+          setTimeout(() => {
+            $("#tabla1").DataTable(this.tablaDinamica(true,true,false))
+          })
+        }
+      },
+    },
+  }  
+  </script>

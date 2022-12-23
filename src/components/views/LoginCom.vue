@@ -61,6 +61,11 @@ export default {
           }
         }
     },
+    mounted() {
+       if(localStorage.getItem('spx_localdata')){
+          this.$router.push('/home')
+       }
+    },
     components : {
       AlertCom
     },
@@ -68,7 +73,7 @@ export default {
       submit () {
          let config={
             headers:{
-              'Content-Type' : 'aplication/json'
+              'Accept' : '*/*'
             }
           }
         axios.post(Global.url+'nrsrclassl',this.parametros,config)
@@ -76,11 +81,14 @@ export default {
             this.textomen=response.data.message
             if(response.data.response=='ok'){
                 this.colormen='primary'
-                localStorage.setItem('spx_tok_p',response.data.token)
-                localStorage.setItem('spx_nam_p',response.data.usuario)
-                localStorage.setItem('spx_use_p',response.data.nombre)
-                localStorage.setItem('spx_use_v',response.data.codvend)
-                 this.$router.push('/home')
+                let spx_localdata = {
+                  spx_tok_p : response.data.token,
+                  spx_nam_p : response.data.usuario,
+                  spx_use_p : response.data.nombre,
+                  spx_use_v : response.data.codvend,
+                }
+                localStorage.setItem('spx_localdata',JSON.stringify(spx_localdata))
+                this.$router.push('/home')
             }
             else{
                  this.colormen='danger'
