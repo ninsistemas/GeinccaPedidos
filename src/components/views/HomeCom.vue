@@ -83,9 +83,12 @@ export default {
         .then(res=>{
             if(res.data.response!="error"){
                 this.productos = res.data
-                console.log(this.productos)
+                //console.log(this.productos) ///
                 localStorage.setItem('spx_priceslist',JSON.stringify(this.productos))
                 this.actualizaDatos('productos')
+            }
+            else{
+                this.actuprod = res.data.message
             }
           }
         )
@@ -104,6 +107,9 @@ export default {
                 localStorage.setItem('spx_clientlist',JSON.stringify(this.clientes))
                 this.actualizaDatos('clientes')
             }
+            else{
+                this.actuclie = res.data.message
+            }
           }
         )
         .catch(function(error){
@@ -120,6 +126,9 @@ export default {
                 this.pedidos = res.data
                 localStorage.setItem('spx_orderslist',JSON.stringify(this.pedidos))
                 this.actualizaDatos('pedidos')
+            }
+            else{
+                this.actupedi = res.data.message
             }
           }
         )

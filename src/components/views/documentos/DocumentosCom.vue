@@ -3,7 +3,7 @@
   <head-com/>
   <div class="container mt-3">
       <h3>Mis Pedidos</h3>
-      <table id="tabla1" class="table table-sm table-secondary table-borderless">
+      <table v-if="mostrarTab1>0" id="tabla1" class="table table-sm table-secondary table-borderless">
         <thead>
           <tr>
             <th>PEDIDOS ENVIADOS</th>
@@ -33,7 +33,7 @@
         </tbody>
       </table>
       <p></p>
-      <table v-if="mostrarTab>0" id="tabla2" class="table table-sm table-primary table-borderless">
+      <table v-if="mostrarTab2>0" id="tabla2" class="table table-sm table-primary table-borderless">
         <thead>
           <tr>
             <th>PEDIDOS PENDIENTES</th>
@@ -83,7 +83,8 @@ export default {
         vendedor : null,
         documentosEnv:[],
         documentosPen:[],
-        mostrarTab : 0,
+        mostrarTab1 : 0,
+        mostrarTab2 : 0,
     }
   },
   mounted(){
@@ -102,6 +103,10 @@ export default {
             setTimeout(() => {
               $("#tabla1").DataTable(this.tablaDinamica(true,true,false))
             })
+            this.mostrarTab1 = this.documentosPen.length
+        }
+        else{
+          this.mostrarTab1 = 0
         }
     },
     documentosPendientes(){
@@ -131,7 +136,10 @@ export default {
           setTimeout(() => {
               $("#tabla2").DataTable(this.tablaDinamica(true,true,false))
             })
-            this.mostrarTab = this.documentosPen.length
+            this.mostrarTab2 = this.documentosPen.length
+        }
+        else{
+          this.mostrarTab2 = 0
         }
     },
     totalizarpedido(){

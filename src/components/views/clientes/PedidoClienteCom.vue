@@ -42,14 +42,14 @@
                 </div>
                 <div v-if="this.cantire>0" class="row g-2">
                     <div class="form-floating col">
-                        <input v-model="comentario"  type="text" class="form-control" placeholder="Comentario"  maxlength="40" v-maska="{ mask: 'X*', tokens: { 'X': { pattern: /[a-zA-Z .,ñÑ]/, uppercase: true }} }">
+                        <input v-model="comentario"  type="text" class="form-control" placeholder="Comentario"  maxlength="40" v-maska="{ mask: 'X*', tokens: { 'X': { pattern: /[a-zA-Z 1234567890.,ñÑ]/, uppercase: true }} }">
                     </div>
                 </div>
                  <hr>
                  <div v-if="this.cantire>0" class="d-grid gap-2">
-                    <button @click="totalizarpedido()" class="btn btn-danger mr-3"  >GUARDAR Y ENVIAR</button>
-                    <button @click="guardarPedido()" class="btn btn-dark mr-3"  >GUARDAR</button>
-                    <router-link to="clientes" class="btn btn-secondary" type="button" >Cancelar</router-link>
+                    <button @click="totalizarpedido()" class="btn btn-danger mb-2 btn-block"  >GUARDAR Y ENVIAR</button>
+                    <button @click="guardarPedido()" class="btn btn-dark mb-2 btn-block"  >GUARDAR</button>
+                    <router-link to="clientes" class="btn btn-secondary btn-block" type="button" >Cancelar</router-link>
                 </div>
             <!-- Modal -->
             <div class="modal fade" id="ModalActivos" tabindex="-1" aria-labelledby="ModalActivosLabel" aria-hidden="true">
