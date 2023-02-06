@@ -26,9 +26,9 @@ Vue.use(VueRouter)
 
 // definir rutas
 const routes = [
-  {path:'/login',component:LoginCom,name:'LoginCom'},
-  {path:'/',redirect:'/login',name:'login'},
+  {path:'/',redirect:'/login',name:'LoginCom'},
   {path:'*',component:ErrorCom,name:'errorcom'},
+  {path:'/login',component:LoginCom,name:'LoginCom'},
   {path:'/home',component:HomeCom,name:'home'},
   {path:'/clientes',component:ClienteCom,name:'clientecom'},
   {path:'/pedidoclientes',component:PedidoClienteCom,name:'pedidoclientes'},

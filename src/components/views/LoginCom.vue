@@ -25,7 +25,9 @@
                                         <input v-model="parametros.password" type="password" class="form-control form-control-user"
                                             placeholder="CLAVE" id="floatingPassword" required>
                                     </div>
-                                    <button type="submit" class="btn btn-danger btn-user btn-block">INGRESAR</button>
+                                    <div class="d-grid gap-2">
+                                     <button type="submit" class="btn btn-danger btn-user btn-block">INGRESAR</button>
+                                    </div>
                                     <hr>
                                 </form>
                                 <div class="text-center">
@@ -58,12 +60,17 @@ export default {
           parametros:{
               usuario : '',
               password : '',
-          }
+          },
+          usuariologeado : null,
         }
     },
     mounted() {
        if(localStorage.getItem('spx_localdata')){
-          this.$router.push('/home')
+          //this.$router.push('/home')
+          this.usuariologeado = true
+          let datoslocales = JSON.parse(localStorage.getItem('spx_localdata'));
+          this.parametros.usuario = datoslocales.spx_nam_p
+          this.parametros.password = 'xxxxxxxxxx'
        }
     },
     components : {
@@ -71,33 +78,40 @@ export default {
     },
     methods: {
       submit () {
-         let config={
+        if(this.usuariologeado){
+          this.$router.push('/home')
+        }
+        else{
+          let config={
             headers:{
               'Accept' : '*/*'
             }
           }
-        axios.post(Global.url+'nrsrclassl',this.parametros,config)
-        .then((response)=>{
+          axios.post(Global.url+'nrsrclassl',this.parametros,config)
+          .then((response)=>{
             this.textomen=response.data.message
             if(response.data.response=='ok'){
-                this.colormen='primary'
-                let spx_localdata = {
-                  spx_tok_p : response.data.token,
-                  spx_nam_p : response.data.usuario,
-                  spx_use_p : response.data.nombre,
-                  spx_use_v : response.data.codvend,
-                }
-                localStorage.setItem('spx_localdata',JSON.stringify(spx_localdata))
-                this.$router.push('/home')
-            }
-            else{
-                 this.colormen='danger'
-                console.log(this.textomen)
-            }
-        })
-        .catch(function(error){
-            console.log(error)
-        })
+                  this.colormen='primary'
+                  let spx_localdata = {
+                    spx_tok_p : response.data.token,
+                    spx_nam_p : response.data.usuario,
+                    spx_use_p : response.data.nombre,
+                    spx_use_v : response.data.codvend,
+                  }
+                  let spx_factorbcv = 0
+                  localStorage.setItem('spx_localdata',JSON.stringify(spx_localdata))
+                  localStorage.setItem('spx_factorbcv',JSON.stringify(spx_factorbcv))
+                  this.$router.push('/home')
+              }
+              else{
+                  this.colormen='danger'
+                  console.log(this.textomen)
+              }
+          })
+          .catch(function(error){
+              console.log(error)
+          })
+        }
       },
       deshabilita() {
          this.textomen = false

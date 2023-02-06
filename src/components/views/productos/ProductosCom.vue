@@ -13,9 +13,28 @@
         </thead>
         <tbody>
           <tr v-for="producto in productos" :key="producto.id">
-            <td> <small><b>{{producto.CodProd}}-{{ producto.Descrip }} </b><br>
+            <td>
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-1">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                  {{producto.CodProd}}-{{ producto.Descrip }}</div>
+                                <div class="font-weight-bold text-gray-800">Precio: {{producto.PrecioIVA | currency}} </div>
+                                <div>Cantidad: {{producto.Existen | currency}}  {{producto.Unidad}}</div>
+                            </div>
+                            <div class="col-auto">
+                              <img class="img-fluid" style="width: 7rem;" 
+                              :src="'img/'+producto.CodProd+'.jpg'"  
+                              alt="..." />   
+                          </div>
+                        </div>
+                    </div>
+                </div>              
+             </td>
+            <!--td> <small><b>{{producto.CodProd}}-{{ producto.Descrip }} </b><br>
               <i>Precio: {{producto.PrecioIVA | currency}} - Existencia: {{producto.Existen | currency}} {{producto.Unidad}}</i></small>
-            </td>
+            </td -->
             <!-- td class="text-sm" style=" text-align: right;">{{producto.PrecioIVA | currency}}</td -->
             <!-- td class="text-sm" style=" text-align: right;">{{producto.Existen | currency}}</td -->
             <!-- td class="text-sm">{{producto.Unidad}}</td -->

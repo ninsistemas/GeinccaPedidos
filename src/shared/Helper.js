@@ -4,6 +4,7 @@ exports.install = function (Vue) {
 
             logOutApp: function () {
 				localStorage.removeItem('spx_localdata')
+				localStorage.removeItem('spx_factorbcv')
 				this.$router.push('/login') 
             },
             headRequest: function () {
@@ -26,7 +27,7 @@ exports.install = function (Vue) {
 					ordering: p_ordering,
 					lengthChange : false,
 					lengthMenu: [[5,10, 25, 50, -1],[5,10, 25, 50,"Todo"],],
-					pageLength: 10,
+					pageLength: 5,
 					buttons: [
 						'copyHtml5',
 						'excelHtml5',

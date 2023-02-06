@@ -3,7 +3,7 @@
   <head-com/>
   <div class="container mt-3">
       <h3>Mis Pedidos</h3>
-      <table v-if="mostrarTab1>0" id="tabla1" class="table table-sm table-secondary table-borderless">
+      <table v-if="mostrarTab1>=0" id="tabla1" class="table table-sm table-secondary table-borderless">
         <thead>
           <tr>
             <th>PEDIDOS ENVIADOS</th>
@@ -33,7 +33,7 @@
         </tbody>
       </table>
       <p></p>
-      <table v-if="mostrarTab2>0" id="tabla2" class="table table-sm table-primary table-borderless">
+      <table v-if="mostrarTab2>=0" id="tabla2" class="table table-sm table-primary table-borderless">
         <thead>
           <tr>
             <th>PEDIDOS PENDIENTES</th>
@@ -83,8 +83,8 @@ export default {
         vendedor : null,
         documentosEnv:[],
         documentosPen:[],
-        mostrarTab1 : 0,
-        mostrarTab2 : 0,
+        mostrarTab1 : -1,
+        mostrarTab2 : -1,
     }
   },
   mounted(){
@@ -106,7 +106,7 @@ export default {
             this.mostrarTab1 = this.documentosPen.length
         }
         else{
-          this.mostrarTab1 = 0
+          this.mostrarTab1 = -1
         }
     },
     documentosPendientes(){
@@ -139,7 +139,7 @@ export default {
             this.mostrarTab2 = this.documentosPen.length
         }
         else{
-          this.mostrarTab2 = 0
+          this.mostrarTab2 = -1
         }
     },
     totalizarpedido(){

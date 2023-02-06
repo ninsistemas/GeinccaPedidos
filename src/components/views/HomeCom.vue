@@ -1,6 +1,6 @@
 <template>
 <div class="container">
-    <head-com/>
+    <head-com :factorbcv="this.factorbcv" />
     <div class="card o-hidden border-0 shadow-lg ">
         <div class="card-body p-0">
             <div class="row">
@@ -61,6 +61,7 @@ export default {
         actuprod : null,
         actuclie : null,
         actupedi : null,
+        factorbcv : 0,
     }
   },
   components:{
@@ -71,6 +72,7 @@ export default {
     this.actuprod = localStorage.getItem('spx_updateprices')
     this.actuclie = localStorage.getItem('spx_updateclient')
     this.actupedi = localStorage.getItem('spx_updateorders')
+    this.factorbcv = localStorage.getItem('spx_factorbcv')
     this.datoslocales = JSON.parse(localStorage.getItem('spx_localdata'));
     this.vendedor = this.datoslocales.spx_use_v;
   },
@@ -97,24 +99,8 @@ export default {
         })
     },
     actualizarClientes(){
-        localStorage.removeItem('spx_clientlist');
-        localStorage.removeItem('spx_updateclient');
-        this.actuclie = null;
-        axios.get(Global.url+'clientesvendedor/'+this.vendedor,this.headRequest())
-        .then(res=>{
-            if(res.data.response!="error"){
-                this.clientes = res.data
-                localStorage.setItem('spx_clientlist',JSON.stringify(this.clientes))
-                this.actualizaDatos('clientes')
-            }
-            else{
-                this.actuclie = res.data.message
-            }
-          }
-        )
-        .catch(function(error){
-            console.log(error)
-        })
+        this.clientescobranza()
+        this.factorcambiario()
     },
     actualizarPedidos(){
         localStorage.removeItem('spx_orderslist');
@@ -153,6 +139,44 @@ export default {
         }
 
     },
+    clientescobranza(){
+        localStorage.removeItem('spx_clientlist');
+        localStorage.removeItem('spx_updateclient');
+        this.actuclie = null;
+        axios.get(Global.url+'clientesvendedor/'+this.vendedor,this.headRequest())
+        .then(res=>{
+            if(res.data.response!="error"){
+                this.clientes = res.data
+                //console.log(this.clientes);
+                localStorage.setItem('spx_clientlist',JSON.stringify(this.clientes))
+                this.actualizaDatos('clientes')
+            }
+            else{
+                this.actuclie = res.data.message
+            }
+          }
+        )
+        .catch(function(error){
+            console.log(error)
+        })
+    },
+    factorcambiario(){
+        axios.get(Global.url+'factorcambiario',this.headRequest())
+        .then(res=>{
+            if(res.data.response!="error"){
+                localStorage.removeItem('spx_factorbcv')
+                this.factorbcv = res.data[0]['FactorAct']
+                localStorage.setItem('spx_factorbcv',JSON.stringify(this.factorbcv))
+            }
+            else{
+                this.actuclie = res.data.message
+            }
+          }
+        )
+        .catch(function(error){
+            console.log(error)
+        })
+    }
   },
 }
 </script>
