@@ -1,8 +1,9 @@
 <template>
     
-<div class="container">
+<main>
     <head-com ocultar_factor="1"/>
-    <p class="topnav text-center" style="background-color: #333; color: white;">BCV: {{ factorbcv | currency }}</p>
+    <p class="text-center" style="background-color: #333; color: white;">BCV: {{ factorbcv | currency }}</p>
+    <div class="container">
     <div class="card o-hidden border-0 shadow-lg ">
         <div class="card-body p-0">
             <div class="row">
@@ -44,7 +45,8 @@
             </div>
         </div>
     </div>
-</div>      
+    </div>
+</main>      
 </template>
 
 <script>
