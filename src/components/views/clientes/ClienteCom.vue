@@ -1,7 +1,6 @@
 <template>
   <main>
-    <head-com/>
-
+    <head-com ocultar_factor="0" />
         <div class="input-group p-2" >
             <input v-model="datoabuscar" type="text" class="form-control bg-light border-0 small" placeholder="Buscar por nombre"
                 aria-label="Search" aria-describedby="basic-addon2">

@@ -1,6 +1,8 @@
 <template>
+    
 <div class="container">
-    <head-com :factorbcv="this.factorbcv" />
+    <head-com ocultar_factor="1"/>
+    <p class="topnav text-center" style="background-color: #333; color: white;">BCV: {{ factorbcv | currency }}</p>
     <div class="card o-hidden border-0 shadow-lg ">
         <div class="card-body p-0">
             <div class="row">
@@ -72,9 +74,9 @@ export default {
     this.actuprod = localStorage.getItem('spx_updateprices')
     this.actuclie = localStorage.getItem('spx_updateclient')
     this.actupedi = localStorage.getItem('spx_updateorders')
-    this.factorbcv = localStorage.getItem('spx_factorbcv')
     this.datoslocales = JSON.parse(localStorage.getItem('spx_localdata'));
     this.vendedor = this.datoslocales.spx_use_v;
+    this.factorbcv = localStorage.getItem('spx_factorbcv')
   },
   methods: {
     actualizarProductos(){
@@ -161,10 +163,11 @@ export default {
         })
     },
     factorcambiario(){
+        localStorage.removeItem('spx_factorbcv')
+        this.factorbcv = 0
         axios.get(Global.url+'factorcambiario',this.headRequest())
         .then(res=>{
-            if(res.data.response!="error"){
-                localStorage.removeItem('spx_factorbcv')
+            if(res.data.response!="error"){ 
                 this.factorbcv = res.data[0]['FactorAct']
                 localStorage.setItem('spx_factorbcv',JSON.stringify(this.factorbcv))
             }
@@ -176,7 +179,7 @@ export default {
         .catch(function(error){
             console.log(error)
         })
-    }
+    },
   },
 }
 </script>
