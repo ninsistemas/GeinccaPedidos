@@ -36,10 +36,14 @@
                                 </button>
                             </div>
                         <!-- /form -->
-                        <hr>
-                        <div class="text-center">
-                            <p class="text text-primary small">ninsistemas</p>
+                        <p></p>
+                        <div class="text-center col-auto">
+                              <img class="img-fluid" style="width: 5rem;" 
+                              :src="'img/logo.jpg'"  
+                              alt="..." />   
                         </div>
+                        <hr>
+                        <p class="text-center text text-primary small">ninsistemas</p>
                     </div>
                 </div>
             </div>
