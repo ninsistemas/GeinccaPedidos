@@ -2,7 +2,7 @@
     
 <main>
     <head-com ocultar_factor="1"/>
-    <p class="text-center" style="background-color: #333; color: white;">BCV: {{ factorbcv | currency }}</p>
+    <p class="text-center" :style=colorfond >BCV: {{ factorbcv | currency }} - Act: {{ fecharepl }}</p>
     <div class="container">
     <div class="card o-hidden border-0 shadow-lg ">
         <div class="card-body p-0">
@@ -70,19 +70,23 @@ export default {
         actuclie : null,
         actupedi : null,
         factorbcv : 0,
+        fecharepl : null,
+        colorfond : null
     }
   },
   components:{
     HeadCom
   },
   mounted(){
-    this.checkUser()
-    this.actuprod = localStorage.getItem('spx_updateprices')
-    this.actuclie = localStorage.getItem('spx_updateclient')
-    this.actupedi = localStorage.getItem('spx_updateorders')
+    this.checkUser();
+    this.actuprod = localStorage.getItem('spx_updateprices');
+    this.actuclie = localStorage.getItem('spx_updateclient');
+    this.actupedi = localStorage.getItem('spx_updateorders');
     this.datoslocales = JSON.parse(localStorage.getItem('spx_localdata'));
     this.vendedor = this.datoslocales.spx_use_v;
-    this.factorbcv = localStorage.getItem('spx_factorbcv')
+    this.factorbcv = localStorage.getItem('spx_factorbcv');
+    this.fecharepl = localStorage.getItem('spx_fechareplica');
+    this.colorband();
   },
   methods: {
     actualizarProductos(){
@@ -104,11 +108,13 @@ export default {
         )
         .catch(function(error){
             console.log('respuesta erronea - '+error)
-        })
+        });
+        this.fechareplica();
     },
     actualizarClientes(){
-        this.clientescobranza()
-        this.factorcambiario()
+        this.clientescobranza();
+        this.factorcambiario();
+        this.fechareplica();
     },
     actualizarPedidos(){
         localStorage.removeItem('spx_orderslist');
@@ -128,7 +134,8 @@ export default {
         )
         .catch(function(error){
             console.log(error)
-        })
+        });
+        this.fechareplica();
     },
     actualizaDatos(tipo){
         let today = new Date();
@@ -186,6 +193,35 @@ export default {
             console.log(error)
         })
     },
+    fechareplica(){
+        axios.get(Global.url+'configurador/parametros',this.headRequest())
+        .then(res=>{
+            if(res.data.response!="error"){ 
+                let fecharespu = res.data[0]['fecha_replica'] 
+                this.fecharepl =fecharespu.substring(8,10)+'/'+fecharespu.substring(5,7)+'/'+fecharespu.substring(0,4)+' '+fecharespu.substring(11,16);
+                localStorage.removeItem('spx_fechareplica')
+                localStorage.setItem('spx_fechareplica',this.fecharepl)
+            }
+            else{
+                this.actuprod = res.data.message
+            }
+          }
+        )
+        .catch(function(error){
+            console.log(error)
+        });
+        this.colorband();
+    },
+    colorband(){
+        let today = new Date();
+        let now = today.getDate().toString().padStart(2, "0")+'/'+(today.getMonth() + 1).toString().padStart(2, "0")+'/'+today.getFullYear();    
+        if (now == this.fecharepl.substring(0,10)){
+            this.colorfond = 'background-color: #333; color: white;';
+        }
+        else{
+            this.colorfond = 'background-color: #ff0e06; color: white;'
+        }
+    },
   },
 }
-</script>
+</script>   

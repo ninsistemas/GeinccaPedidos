@@ -108,6 +108,8 @@ export default {
             descrip : null,
             cantidad : 0,
             precio : 0,
+            conexion : null,
+            deposito : null,
             comentario : '',
             cantire : 0,
             totalre : 0,
@@ -140,7 +142,7 @@ export default {
             let listaProductos = JSON.parse(localStorage.getItem('spx_priceslist'));
             if(listaProductos != null){
                 listaProductos.forEach((producto)=>{
-                    this.options.push({value : producto.CodProd+'ç'+producto.Descrip+'ç'+producto.Precio, text : producto.CodProd+' - '+producto.Descrip+' (E : '+parseInt(producto.Existen)+' - P: '+producto.Precio+')' })
+                    this.options.push({value : producto.CodProd+'ç'+producto.Descrip+'ç'+producto.Precio+'ç'+producto.Conexion+'ç'+producto.Deposito, text : producto.CodProd+' - '+producto.Descrip+' (E : '+parseInt(producto.Existen)+' - P: '+producto.Precio+')' })
                 });
             }
         },       
@@ -149,6 +151,8 @@ export default {
             this.codprod = itdato[0]
             this.descrip = itdato[1]
             this.precio = itdato[2]
+            this.conexion = itdato[3]
+            this.deposito = itdato[4]
             this.pedidotemp.push({
                 codvend :  this.codvend,
                 codclie : this.codclie,
@@ -157,7 +161,9 @@ export default {
                 descrip : this.descrip,
                 cantidad : this.cantidad,
                 precio : this.precio,
-                comentario : this.comentario
+                comentario : this.comentario,
+                conexion : this.conexion,
+                deposito : this.deposito 
             })
             localStorage.setItem('spx_pedidotemp',JSON.stringify(this.pedidotemp))
             this.cantire = this.pedidotemp.length

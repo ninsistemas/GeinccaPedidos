@@ -98,9 +98,11 @@ export default {
                     spx_use_p : response.data.nombre,
                     spx_use_v : response.data.codvend,
                   }
-                  let spx_factorbcv = 0
+                  let spx_factorbcv = 0;
+                  let spx_fechareplica = null;
                   localStorage.setItem('spx_localdata',JSON.stringify(spx_localdata))
                   localStorage.setItem('spx_factorbcv',JSON.stringify(spx_factorbcv))
+                  localStorage.setItem('spx_fechareplica',JSON.stringify(spx_fechareplica))
                   this.$router.push('/home')
               }
               else{

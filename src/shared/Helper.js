@@ -5,6 +5,7 @@ exports.install = function (Vue) {
             logOutApp: function () {
 				localStorage.removeItem('spx_localdata')
 				localStorage.removeItem('spx_factorbcv')
+				localStorage.removeItem('spx_fechareplica')
 				this.$router.push('/login') 
             },
             headRequest: function () {
