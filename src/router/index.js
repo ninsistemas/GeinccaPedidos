@@ -10,6 +10,7 @@ import PedidoClienteCom from '../components/views/clientes/PedidoClienteCom'
 import ProductosCom from '../components/views/productos/ProductosCom'
 import DocumentosCom from '../components/views/documentos/DocumentosCom'
 import EditarDocumentoCom from '../components/views/documentos/EditarDocumentoCom'
+import MisDatosCom from '../components/views/misdatos/MisDatosCom'
 
 // crear componente de rutas
 Vue.component('LoginCom',LoginCom)
@@ -20,6 +21,7 @@ Vue.component('PedidoClienteCom',PedidoClienteCom)
 Vue.component('ProductosCom',ProductosCom)
 Vue.component('DocumentosCom',DocumentosCom)
 Vue.component('EditarDocumentoCom',EditarDocumentoCom)
+Vue.component('MisDatosCom',MisDatosCom)
 
 // use de vue-router
 Vue.use(VueRouter)
@@ -35,6 +37,7 @@ const routes = [
   {path:'/productos',component:ProductosCom,name:'productos'},
   {path:'/pedidostransito',component:DocumentosCom,name:'pedidostransito'},
   {path:'/editardocumento',component:EditarDocumentoCom,name:'editardocumento'},
+  {path:'/misdatos',component:MisDatosCom,name:'misdatos'},
 ]
 
 // crear objeto router

@@ -23,6 +23,10 @@
                                     <i class="fa fa-shopping-cart"></i> &nbsp;MIS PEDIDOS
                                 </router-link>
                                 <p></p>
+                                <router-link type="button" to="/misdatos" class="btn btn-danger btn-user btn-block" aria-expanded="false">
+                                    <i class="fa fa-compass"></i> &nbsp;MIS DATOS 
+                                </router-link>
+                                <p></p>
                                 <button class="btn btn-dark btn-block btn-user text-sm" @click="actualizarProductos()" aria-expanded="false">
                                     <i class="fa fa-refresh"></i> &nbsp;ACTUALIZAR PRODUCTOS<br>{{ this.actuprod }}
                                 </button>
