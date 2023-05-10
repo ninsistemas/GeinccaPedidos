@@ -16,11 +16,17 @@
             <tr v-for="cliente in datosPaginados" :key="cliente.id">
               <td>
                 <div class="card shadow mb-4"> 
-                    <router-link class="d-block card-header py-3" :to="{name:'pedidoclientes',params:{codclie:cliente.codclie,descrip:cliente.descrip}}">
-                      <h6 class="m-0 font-weight-bold text-primary">
-                        {{ cliente.descrip }}
-                      </h6>
-                    </router-link>
+                    <p class="m-0 font-weight-bold text-primary">
+                      {{ cliente.descrip }}
+                    </p>
+                    <div class="form-group text-right">
+                      <router-link 
+                      :to="{name:'pedidoclientes',params:{codclie:cliente.codclie,descrip:cliente.descrip}}"
+                      class="btn btn-danger btn-sm btn-circle" style="margin-right: 2%;"><i class="fa fa-cart-plus"></i></router-link>
+                      <router-link  
+                      :to="{name:'equiposcliente',params:{codclie:cliente.codclie,descrip:cliente.descrip}}"
+                      class="btn btn-danger btn-sm btn-circle"><i class="fa fa-tachometer"></i></router-link >
+                    </div>
                     <div v-if="cliente.escxc>0">
                         <table class="table table-sm table-primary">
                           <tr v-for="documento in cliente.porcobrar" :key="documento.numerod">

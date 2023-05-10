@@ -24,7 +24,7 @@
                     <td><h5>Alcance</h5></td>
                     <td style="text-align: right;"><h5>{{ alcance }} %</h5></td>
                 </tr>
-                <tr>
+                <tr  :style=alerta>
                     <td><h5>Probable vs Cuota</h5></td>
                     <td style="text-align: right;"><h5>{{ probable_vs_cuota }} %</h5></td>
                 </tr>
@@ -61,6 +61,7 @@
             probable_vs_cuota : 0,
             cf_vender : 0,
             cuota_dia : 0,
+            alerta : '',
         }
       },
       mounted(){
@@ -86,6 +87,9 @@
                     this.probable_vs_cuota = res.data[0]['probable_vs_cuota'];
                     this.cf_vender = res.data[0]['cf_vender'];
                     this.cuota_dia = res.data[0]['cuota_dia'];
+                    if (this.probable_vs_cuota < 0){
+                        this.alerta = "color: black; background-color:  #f94e4e ;";
+                    }
                 }
                 else{
                     console.log(res.data.message)
