@@ -2,7 +2,8 @@
     
 <main>
     <head-com ocultar_factor="1"/>
-    <p class="text-center" :style=colorfond >BCV: {{ factorbcv | currency }} - Act: {{ fecharepl }}</p>
+    <p v-if="colorfond==0" class="text-center" style="background-color: red; color: white;">BCV: {{ factorbcv | currency }} - Act: {{ fecharepl }}</p>
+    <p v-else class="text-center" style="background-color: black; color: white;">BCV: {{ factorbcv | currency }} - Act: {{ fecharepl }}</p>
     <div class="container">
     <div class="card o-hidden border-0 shadow-lg ">
         <div class="card-body p-0">
@@ -27,7 +28,7 @@
                                     <i class="fa fa-compass"></i> &nbsp;MIS DATOS 
                                 </router-link>
                                 <p></p>
-                                <button class="btn btn-dark btn-block btn-user text-sm" @click="actualizarProductos()" aria-expanded="false">
+                                <!-- button class="btn btn-dark btn-block btn-user text-sm" @click="actualizarProductos()" aria-expanded="false">
                                     <i class="fa fa-refresh"></i> &nbsp;ACTUALIZAR PRODUCTOS<br>{{ this.actuprod }}
                                 </button>
                                 <p></p>
@@ -37,7 +38,16 @@
                                 <p></p>
                                 <button class="btn btn-dark btn-block btn-user text-sm" @click="actualizarPedidos()" aria-expanded="false">
                                     <i class="fa fa-refresh"></i> &nbsp;ACTUALIZAR PEDIDOS<br>{{ this.actupedi }}
-                                </button>
+                                </button -->
+                                <div v-if="!sincroniza" class="d-grid gap-2">
+                                    <button @click="sincronizarMisdato()" class="btn btn-dark btn-block" >SINCRONIZAR MIS DATOS</button>
+                                </div>
+                                <div v-if="sincroniza" class="d-grid gap-2">
+                                    <button class="btn btn-primary btn-block" type="button" disabled>
+                                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                        SINCRONIZANDO...
+                                    </button>
+                                </div>
                             </div>
                         <!-- /form -->
                         <p></p>
@@ -65,6 +75,7 @@ export default {
   name: "HomeCom",
   data(){
     return{
+        sincroniza : false,
         productos : [],
         clientes : [],
         pedidos : [],
@@ -75,7 +86,7 @@ export default {
         actupedi : null,
         factorbcv : 0,
         fecharepl : null,
-        colorfond : null
+        colorfond : 0,
     }
   },
   components:{
@@ -93,6 +104,14 @@ export default {
     this.colorband();
   },
   methods: {
+    sincronizarMisdato(){
+        //console.log('sincronizando');
+        this.sincroniza=true;
+        this.actualizarProductos();
+        this.actualizarClientes();
+        this.actualizarPedidos();
+        this.fechareplica();
+    },
     actualizarProductos(){
         localStorage.removeItem('spx_updateprices');
         localStorage.removeItem('spx_priceslist');
@@ -113,12 +132,12 @@ export default {
         .catch(function(error){
             console.log('respuesta erronea - '+error)
         });
-        this.fechareplica();
+        //this.fechareplica();
     },
     actualizarClientes(){
         this.clientescobranza();
         this.factorcambiario();
-        this.fechareplica();
+        //this.fechareplica();
     },
     actualizarPedidos(){
         localStorage.removeItem('spx_orderslist');
@@ -139,7 +158,6 @@ export default {
         .catch(function(error){
             console.log(error)
         });
-        this.fechareplica();
     },
     actualizaDatos(tipo){
         let today = new Date();
@@ -205,6 +223,8 @@ export default {
                 this.fecharepl =fecharespu.substring(8,10)+'/'+fecharespu.substring(5,7)+'/'+fecharespu.substring(0,4)+' '+fecharespu.substring(11,16);
                 localStorage.removeItem('spx_fechareplica')
                 localStorage.setItem('spx_fechareplica',this.fecharepl)
+                this.sincroniza=false;
+                this.colorband();
             }
             else{
                 this.actuprod = res.data.message
@@ -218,12 +238,12 @@ export default {
     },
     colorband(){
         let today = new Date();
-        let now = today.getDate().toString().padStart(2, "0")+'/'+(today.getMonth() + 1).toString().padStart(2, "0")+'/'+today.getFullYear();    
+        let now = today.getDate().toString().padStart(2, "0")+'/'+(today.getMonth() + 1).toString().padStart(2, "0")+'/'+today.getFullYear();
         if (now == this.fecharepl.substring(0,10)){
-            this.colorfond = 'background-color: #333; color: white;';
+            this.colorfond = 1;
         }
         else{
-            this.colorfond = 'background-color: #ff0e06; color: white;'
+            this.colorfond = 0;
         }
     },
   },
